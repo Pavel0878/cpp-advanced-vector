@@ -246,7 +246,8 @@ public:
         return *result;
     }
 
-    void PopBack() /*noexcept*/ {
+    void PopBack() noexcept {
+        assert(size_);
         std::destroy_at(data_.GetAddress() + size_ - 1);
         --size_;
     }
@@ -283,6 +284,7 @@ public:
 
     template <typename... Args>
     iterator Emplace(const_iterator pos, Args&&... args) {
+        assert(pos >= begin() && pos <= end());
         iterator result = nullptr;
         size_t pos_size = pos - begin();
         if (size_ == Capacity()) {
@@ -313,6 +315,7 @@ public:
     }
 
     iterator Erase(const_iterator pos) noexcept(std::is_nothrow_move_assignable_v<T>) {
+        assert(pos >= begin() && pos < end());
         size_t pos_size = pos - begin();
         std::move(begin() + pos_size + 1, end(), begin() + pos_size);
         std::destroy_at(end() - 1);
